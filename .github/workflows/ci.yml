@@ -41,61 +41,9 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  build_mac:
-    runs-on: [self-hosted, ARM64, macOS, qFlipper]
-    env:
-      MAC_OS_KEYCHAIN_NAME: ${{ secrets.MAC_OS_KEYCHAIN_NAME }}
-      MAC_OS_KEYCHAIN_PASSWORD: ${{ secrets.MAC_OS_KEYCHAIN_PASSWORD }}
-      MAC_OS_SIGNING_KEY_ID: ${{ secrets.MAC_OS_SIGNING_KEY_ID }}
-      MAC_OS_SIGNING_TEAM_ID: ${{ secrets.MAC_OS_SIGNING_TEAM_ID }}
-      MAC_OS_SIGNING_USERNAME: ${{ secrets.MAC_OS_SIGNING_USERNAME }}
-      MAC_OS_SIGNING_PASSWORD: ${{ secrets.MAC_OS_SIGNING_PASSWORD }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: Build application
-        run: ./build_mac.sh
-
-      - name: Publish application
-        uses: actions/upload-artifact@v4
-        with:
-          name: qflipper.dmg
-          path: |
-            ./build_mac/qflipper.dmg
-          if-no-files-found: error
-          retention-days: 1
-
-  build_windows:
-    runs-on: [self-hosted, X64, Windows]
-    env:
-        SIGNING_TOOL: ${{ secrets.WIN_SIGNING_TOOL }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          fetch-depth: 0  # must to be there, see installer_windows.nsi file for details
-
-      - name: Build application
-        run: .\build_windows.bat
-
-      - name: Publish application
-        uses: actions/upload-artifact@v4
-        with:
-          name: qFlipperSetup-64bit.exe
-          path: |
-            .\build\qFlipperSetup-64bit.exe
-            .\build\qFlipper-64bit.zip
-          if-no-files-found: error
-          retention-days: 1
-
   upload:
     name: Upload apps to storage
-    needs: [build_windows, build_mac, build_linux]
+    needs: [build_linux]
     runs-on: ubuntu-latest
     steps:
 

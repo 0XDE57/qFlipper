@@ -72,19 +72,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: qFlipper-x86_64.AppImage
-      - uses: actions/download-artifact@v4
-        with:
-          name: qFlipperSetup-64bit.exe
-      - uses: actions/download-artifact@v4
-        with:
-          name: qflipper.dmg
 
       - name: Rename app
         run: |
             mv qFlipper-x86_64.AppImage ./artifacts/qFlipper-x86_64-${SUFFIX}.AppImage
-            mv qFlipperSetup-64bit.exe ./artifacts/qFlipperSetup-64bit-${SUFFIX}.exe
-            mv qFlipper-64bit.zip ./artifacts/qFlipper-64bit-${SUFFIX}.zip
-            mv qflipper.dmg ./artifacts/qFlipper-${SUFFIX}.dmg
 
       - name: Upload artifacts to update server
         if: ${{ !github.event.pull_request.head.repo.fork }}
